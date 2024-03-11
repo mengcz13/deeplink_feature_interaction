@@ -1,5 +1,5 @@
 import numpy as np
-from bm_interpreters.archipelago.application_utils.common_utils import get_efficient_mask_indices
+from archipelago.application_utils.common_utils import get_efficient_mask_indices
 
 
 class AutoIntWrapper:

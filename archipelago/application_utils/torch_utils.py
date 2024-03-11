@@ -4,8 +4,8 @@ from torch.utils import data
 import numpy as np
 import torch.optim as optim
 
-from bm_interpreters.archipelago.explainer import Archipelago
-from bm_interpreters.archipelago.application_utils.common_utils import get_efficient_mask_indices
+from archipelago.explainer import Archipelago
+from archipelago.application_utils.common_utils import get_efficient_mask_indices
 
 
 class ModelWrapperTorch:
