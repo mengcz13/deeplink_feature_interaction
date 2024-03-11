@@ -1,5 +1,6 @@
 rm(list = ls()); gc()
-dat1 = read.csv('murine_rna.csv', head = T, stringsAsFactors = F)
+# dat1 = read.csv('murine_rna.csv', head = T, stringsAsFactors = F)
+dat1 = read.csv('rna1.csv', head = T, stringsAsFactors = F)
 
 nrep = 100
 pe = rep(NA, nrep)
