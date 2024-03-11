@@ -1,6 +1,7 @@
 
 rm(list = ls()); gc()
-setwd('/home/yinfeiko/DeepLINK/newdata2')
+# setwd('/home/yinfeiko/DeepLINK/newdata2')
+setwd('/home/mengcz/workspace/deeplink_feature_interaction/DeepLINK/Real_data_analyses/human_microbiome/data')
 dat1 = read.csv('yu_CRC_common.csv', head = T, stringsAsFactors = F)
 
 nrep = 100
