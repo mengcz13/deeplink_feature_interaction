@@ -75,7 +75,7 @@ def main():
 
     device = torch.device(args.device)
 
-    dataset_collection = load_static_dataset(args.dataset_name)
+    dataset_collection = load_static_dataset(args)
 
     if args.model_type == 'MLP':
         model = MLP(

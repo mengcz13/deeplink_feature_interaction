@@ -19,10 +19,12 @@ class StaticDatasetCollection():
     '''
     Dataset for static (non-temporal) data.
     '''
-    def __init__(self, dataset_name, raw_data_path, split_params, normalize=True):
+    def __init__(self, dataset_name, raw_data_path, split_params, args, normalize=True, top_feature_file=None):
         self.dataset_name = dataset_name
         self.raw_data_path = raw_data_path
         self.normalize = normalize
+        self.top_feature_file = top_feature_file
+        self.args = args
         self.norm_params = None
         self.split_params = split_params
         self.load_data()
@@ -34,7 +36,26 @@ class StaticDatasetCollection():
 
     def load_data(self):
         X0 = np.genfromtxt(self.raw_data_path, delimiter=',', skip_header=1)
-        X, y = X0[:, 0:274], X0[:, 274:275]
+        if self.dataset_name == 'human_microbiome':
+            X, y = X0[:, 0:274], X0[:, 274:275]
+        elif self.dataset_name == 'murine_sc_RNAseq_topf':
+            y = X0[:, 13777:13778]
+            X = X0[:,0: 13777]
+            top200 = np.genfromtxt(self.top_feature_file, delimiter=',', skip_header=1) - 1
+            ind_col = top200[:,self.args.nrep].astype(int)
+            X = X[:,ind_col]
+        elif self.dataset_name == 'murine_sc_RNAseq':
+            y = X0[:, 13777:13778]
+            X = X0[:,0: 13777]
+        elif self.dataset_name == 'human_sc_RNAseq_topf':
+            y = X0[:, 23257:23258]
+            X = X0[:,0:23257]
+            top200 = np.genfromtxt(self.top_feature_file, delimiter=',', skip_header=1) - 1
+            ind_col = top200[:,self.args.nrep].astype(int)
+            X = X[:,ind_col]
+        elif self.dataset_name == 'human_sc_RNAseq':
+            y = X0[:, 23257:23258]
+            X = X0[:,0:23257]
         if self.normalize:
             self.norm_params = {
                 'mean': np.mean(X, axis=0),
@@ -78,7 +99,7 @@ class StaticDatasetCollection():
 
         train_data = {k: v[train_indices] for k, v in self.data.items()}
         test_data = {k: v[test_indices] for k, v in self.data.items()}
-        if val_indices:
+        if len(val_indices) > 0:
             val_data = {k: v[val_indices] for k, v in self.data.items()}
         else:
             val_data = test_data
@@ -86,15 +107,53 @@ class StaticDatasetCollection():
         self.train_data, self.val_data, self.test_data = train_data, val_data, test_data
 
 
-def load_static_dataset(dataset_name):
+def load_static_dataset(args):
+    dataset_name = args.dataset_name
     if dataset_name == 'human_microbiome':
         raw_data_path = 'DeepLINK/Real_data_analyses/human_microbiome/data/microbiome_data_common.csv'
+        top_feature_file = None
         split_params = {
             'train': 147,
             'test': 37
         }
         normalize = True
+    elif dataset_name == 'human_sc_RNAseq':
+        raw_data_path = 'DeepLINK/Real_data_analyses/human_sc_RNAseq/data/rna2.csv'
+        top_feature_file = None
+        split_params = {
+            'train': 0.4,
+            'val': 0.5,
+            'test': 0.1
+        }
+        normalize = True
+    elif dataset_name == 'human_sc_RNAseq_topf':
+        raw_data_path = 'DeepLINK/Real_data_analyses/human_sc_RNAseq/data/rna2.csv'
+        top_feature_file = 'DeepLINK/Real_data_analyses/human_sc_RNAseq/data/top500_p50.csv'
+        split_params = {
+            'train': 0.4,
+            'val': 0.5,
+            'test': 0.1
+        }
+        normalize = True
+    elif dataset_name == 'murine_sc_RNAseq':
+        raw_data_path = 'DeepLINK/Real_data_analyses/murine_sc_RNAseq/data/rna1.csv'
+        top_feature_file = None
+        split_params = {
+            'train': 0.4,
+            'val': 0.5,
+            'test': 0.1
+        }
+        normalize = True
+    elif dataset_name == 'murine_sc_RNAseq_topf':
+        raw_data_path = 'DeepLINK/Real_data_analyses/murine_sc_RNAseq/data/rna1.csv'
+        top_feature_file = 'DeepLINK/Real_data_analyses/murine_sc_RNAseq/data/top500_p50.csv'
+        split_params = {
+            'train': 0.4,
+            'val': 0.5,
+            'test': 0.1
+        }
+        normalize = True
     else:
         raise ValueError(f'Invalid dataset name: {dataset_name}')
-    dataset_collection = StaticDatasetCollection(dataset_name, raw_data_path, split_params, normalize=normalize)
+    dataset_collection = StaticDatasetCollection(dataset_name, raw_data_path, split_params, args, normalize=normalize, top_feature_file=top_feature_file)
     return dataset_collection

@@ -6,6 +6,7 @@ def construct_arg_parser():
     parser = ArgumentParser()
     ## data
     parser.add_argument("--dataset_name", type=str, required=True)
+    parser.add_argument("--nrep", type=int, default=0, help='used in filtered features')
     ## model
     parser.add_argument("--model_type", type=str, choices=["MLP"], required=True)
     temp_args, _ = parser.parse_known_args()

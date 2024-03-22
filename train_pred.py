@@ -83,7 +83,7 @@ def main():
 
     device = torch.device(args.device)
 
-    dataset_collection = load_static_dataset(args.dataset_name)
+    dataset_collection = load_static_dataset(args)
     train_dataloader = DataLoader(dataset_collection.train_dataset, batch_size=args.batch_size, shuffle=True, drop_last=True)
     val_dataloader = DataLoader(dataset_collection.val_dataset, batch_size=args.batch_size, shuffle=False)
     test_dataloader = DataLoader(dataset_collection.test_dataset, batch_size=args.batch_size, shuffle=False)
